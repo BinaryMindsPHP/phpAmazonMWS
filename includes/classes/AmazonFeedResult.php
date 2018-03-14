@@ -26,25 +26,26 @@
  */
 class AmazonFeedResult extends AmazonFeedsCore{
     protected $rawFeed;
-    
+
     /**
      * AmazonFeedResult gets the result of a Feed from Amazon.
-     * 
+     *
      * The parameters are passed to the parent constructor, which are
      * in turn passed to the AmazonCore constructor. See it for more information
      * on these parameters and common methods.
      * Please note that an extra parameter comes before the usual Mock Mode parameters,
      * so be careful when setting up the object.
+     * @param AmazonConfigurationInterface|null $configuration
      * @param string $s [optional] <p>Name for the store you want to use.
      * This parameter is optional if only one store is defined in the config file.</p>
      * @param string $id [optional] <p>The Feed Submission ID to set for the object.</p>
      * @param boolean $mock [optional] <p>This is a flag for enabling Mock Mode.
      * This defaults to <b>FALSE</b>.</p>
      * @param array|string $m [optional] <p>The files (or file) to use in Mock Mode.</p>
-     * @param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
+     * @internal param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
      */
-    public function __construct($s = null, $id = null, $mock = false, $m = null, $config = null){
-        parent::__construct($s, $mock, $m, $config);
+    public function __construct(AmazonConfigurationInterface $configuration = null, $s = null, $id = null, $mock = false, $m = null){
+        parent::__construct($configuration, $s, $mock, $m);
         include($this->env);
         
         if($id){
@@ -88,7 +89,6 @@ class AmazonFeedResult extends AmazonFeedsCore{
      */
     public function fetchFeedResult(){
         if (!array_key_exists('FeedSubmissionId',$this->options)){
-            $this->log("Feed Submission ID must be set in order to fetch it!",'Warning');
             return false;
         }
         
@@ -123,9 +123,7 @@ class AmazonFeedResult extends AmazonFeedsCore{
         }
         try{
             file_put_contents($path,$this->rawFeed);
-            $this->log("Successfully saved feed #".$this->options['FeedSubmissionId']." at $path");
         } catch (Exception $e){
-            $this->log("Unable to save feed #".$this->options['FeedSubmissionId']." at $path: ".$e->getMessage(),'Urgent');
             return false;
         }
     }

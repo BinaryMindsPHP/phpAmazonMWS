@@ -25,25 +25,29 @@
  * the response from Amazon can be viewed with <i>getResponse</i>.
  */
 class AmazonFeed extends AmazonFeedsCore{
+
+    use BmHelperTrait;
+
     protected $response;
     protected $feedContent;
     protected $feedMD5;
-    
+
     /**
      * AmazonFeed submits a Feed to Amazon.
-     * 
+     *
      * The parameters are passed to the parent constructor, which are
      * in turn passed to the AmazonCore constructor. See it for more information
      * on these parameters and common methods.
+     * @param AmazonConfigurationInterface|null $configuration
      * @param string $s [optional] <p>Name for the store you want to use.
      * This parameter is optional if only one store is defined in the config file.</p>
      * @param boolean $mock [optional] <p>This is a flag for enabling Mock Mode.
      * This defaults to <b>FALSE</b>.</p>
      * @param array|string $m [optional] <p>The files (or file) to use in Mock Mode.</p>
-     * @param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
+     * @internal param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
      */
-    public function __construct($s = null, $mock = false, $m = null, $config = null){
-        parent::__construct($s, $mock, $m, $config);
+    public function __construct(AmazonConfigurationInterface $configuration = null, $s = null, $mock = false, $m = null){
+        parent::__construct($configuration, $s, $mock, $m);
         include($this->env);
         
         $this->options['Action'] = 'SubmitFeed';
@@ -209,11 +213,9 @@ class AmazonFeed extends AmazonFeedsCore{
      */
     public function setPurge($s = 'true'){
         if ($s == 'true' || ($s && is_bool($s))){
-            $this->log("Caution! Purge mode set!",'Warning');
             $this->options['PurgeAndReplace'] = 'true';
             $this->throttleTime = 86400;
         } else if ($s == 'false' || (!$s && is_bool($s))){
-            $this->log("Purge mode deactivated.");
             $this->options['PurgeAndReplace'] = 'false';
             include($this->env);
             if(isset($THROTTLE_TIME_FEEDSUBMIT)) {
@@ -235,11 +237,9 @@ class AmazonFeed extends AmazonFeedsCore{
      */
     public function submitFeed(){
         if (!$this->feedContent){
-            $this->log("Feed's contents must be set in order to submit it!",'Warning');
             return false;
         }
         if (!array_key_exists('FeedType',$this->options)){
-            $this->log("Feed Type must be set in order to submit a feed!",'Warning');
             return false;
         }
         
@@ -262,7 +262,6 @@ class AmazonFeed extends AmazonFeedsCore{
                 $body = strstr($response['body'],'<');
                 $xml = simplexml_load_string($body)->$path;
             } else {
-                $this->log("Unexpected response: ".print_r($response,true),'Warning');
                 $xml = simplexml_load_string($response['body'])->$path;
             }
             
@@ -290,8 +289,7 @@ class AmazonFeed extends AmazonFeedsCore{
         $this->response['FeedType'] = (string)$xml->FeedType;
         $this->response['SubmittedDate'] = (string)$xml->SubmittedDate;
         $this->response['FeedProcessingStatus'] = (string)$xml->FeedProcessingStatus;
-        
-        $this->log("Successfully submitted feed #".$this->response['FeedSubmissionId'].' ('.$this->response['FeedType'].')');
+
     }
     
     /**
@@ -324,8 +322,5 @@ class AmazonFeed extends AmazonFeedsCore{
             return false;
         }
     }
-    
-    
-    
 }
 ?>

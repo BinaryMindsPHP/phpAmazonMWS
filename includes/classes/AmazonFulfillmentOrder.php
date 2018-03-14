@@ -26,25 +26,26 @@
  */
 class AmazonFulfillmentOrder extends AmazonOutboundCore{
     protected $order;
-    
+
     /**
      * AmazonFulfillmentOrder fetches a fulfillment order from Amazon. You need a Fulfillment Order ID.
-     * 
+     *
      * The parameters are passed to the parent constructor, which are
      * in turn passed to the AmazonCore constructor. See it for more information
      * on these parameters and common methods.
      * Please note that an extra parameter comes before the usual Mock Mode parameters,
      * so be careful when setting up the object.
+     * @param AmazonConfigurationInterface|null $configuration
      * @param string $s [optional] <p>Name for the store you want to use.
      * This parameter is optional if only one store is defined in the config file.</p>
      * @param string $id [optional] <p>The Fulfillment Order ID to set for the object.</p>
      * @param boolean $mock [optional] <p>This is a flag for enabling Mock Mode.
      * This defaults to <b>FALSE</b>.</p>
      * @param array|string $m [optional] <p>The files (or file) to use in Mock Mode.</p>
-     * @param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
+     * @internal param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
      */
-    public function __construct($s = null, $id = null, $mock = false, $m = null, $config = null) {
-        parent::__construct($s, $mock, $m, $config);
+    public function __construct(AmazonConfigurationInterface $configuration = null, $s = null, $id = null, $mock = false, $m = null) {
+        parent::__construct($configuration, $s, $mock, $m);
         
         if($id){
             $this->setOrderId($id);
@@ -77,7 +78,6 @@ class AmazonFulfillmentOrder extends AmazonOutboundCore{
      */
     public function fetchOrder(){
         if (!array_key_exists('SellerFulfillmentOrderId',$this->options)){
-            $this->log("Fulfillment Order ID must be set in order to fetch it!",'Warning');
             return false;
         }
         
@@ -342,7 +342,6 @@ class AmazonFulfillmentOrder extends AmazonOutboundCore{
      */
     public function cancelOrder(){
         if (!array_key_exists('SellerFulfillmentOrderId',$this->options)){
-            $this->log("Fulfillment Order ID must be set in order to cancel it!",'Warning');
             return false;
         }
         
@@ -360,7 +359,6 @@ class AmazonFulfillmentOrder extends AmazonOutboundCore{
         if (!$this->checkResponse($response)){
             return false;
         } else {
-            $this->log("Successfully deleted Fulfillment Order ".$this->options['SellerFulfillmentOrderId']);
             return true;
         }
     }

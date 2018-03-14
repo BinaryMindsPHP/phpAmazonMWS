@@ -85,7 +85,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
         if ($s === 'Ship' || $s === 'Hold'){
             $this->options['FulfillmentAction'] = $s;
         } else {
-            $this->log("Tried to set fulfillment action to invalid value", 'Warning');
             return false;
         }
     }
@@ -137,7 +136,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
             if ($s == 'Standard' || $s == 'Expedited' || $s == 'Priority'){
                 $this->options['ShippingSpeedCategory'] = $s;
             } else {
-                $this->log("Tried to set shipping status to invalid value",'Warning');
                 return false;
             }
         } else {
@@ -168,7 +166,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
      */
     public function setAddress($a){
         if (is_null($a) || is_string($a) || !$a){
-            $this->log("Tried to set address to invalid values",'Warning');
             return false;
         }
         $this->resetAddress();
@@ -238,7 +235,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
             if ($s == 'FillOrKill' || $s == 'FillAll' || $s == 'FillAllAvailable'){
                 $this->options['FulfillmentPolicy'] = $s;
             } else {
-                $this->log("Tried to set fulfillment policy to invalid value",'Warning');
                 return false;
             }
         } else {
@@ -252,7 +248,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
      * @deprecated since 1.3.0
      */
     public function setFulfillmentMethod(){
-        $this->log("The FulfillmentMethod option is no longer used for creating fulfillment orders.", 'Warning');
         return FALSE;
     }
     
@@ -414,7 +409,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
      */
     public function setItems($a){
         if (is_null($a) || is_string($a) || !$a){
-            $this->log("Tried to set Items to invalid values",'Warning');
             return false;
         }
         $this->resetItems();
@@ -452,7 +446,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
                 $i++;
             } else {
                 $this->resetItems();
-                $this->log("Tried to set Items with invalid array",'Warning');
                 return false;
             }
         }
@@ -484,31 +477,24 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
      */
     public function createOrder(){
         if (!array_key_exists('SellerFulfillmentOrderId',$this->options)){
-            $this->log("Seller Fulfillment Order ID must be set in order to create an order",'Warning');
             return false;
         }
         if (!array_key_exists('DisplayableOrderId',$this->options)){
-            $this->log("Displayable Order ID must be set in order to create an order",'Warning');
             return false;
         }
         if (!array_key_exists('DisplayableOrderDateTime',$this->options)){
-            $this->log("Date must be set in order to create an order",'Warning');
             return false;
         }
         if (!array_key_exists('DisplayableOrderComment',$this->options)){
-            $this->log("Comment must be set in order to create an order",'Warning');
             return false;
         }
         if (!array_key_exists('ShippingSpeedCategory',$this->options)){
-            $this->log("Shipping Speed must be set in order to create an order",'Warning');
             return false;
         }
         if (!array_key_exists('DestinationAddress.Name',$this->options)){
-            $this->log("Address must be set in order to create an order",'Warning');
             return false;
         }
         if (!array_key_exists('Items.member.1.SellerSKU',$this->options)){
-            $this->log("Items must be set in order to create an order",'Warning');
             return false;
         }
 
@@ -526,7 +512,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
         if (!$this->checkResponse($response)){
             return false;
         } else {
-            $this->log("Successfully created Fulfillment Order ".$this->options['SellerFulfillmentOrderId']." / ".$this->options['DisplayableOrderId']);
             return true;
         }
     }
@@ -541,7 +526,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
      */
     public function updateOrder(){
         if (!array_key_exists('SellerFulfillmentOrderId',$this->options)){
-            $this->log("Seller Fulfillment Order ID must be set in order to update an order",'Warning');
             return false;
         }
 
@@ -559,7 +543,6 @@ class AmazonFulfillmentOrderCreator extends AmazonOutboundCore{
         if (!$this->checkResponse($response)){
             return false;
         } else {
-            $this->log("Successfully updated Fulfillment Order ".$this->options['SellerFulfillmentOrderId']);
             return true;
         }
     }

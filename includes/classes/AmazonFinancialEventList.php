@@ -195,7 +195,6 @@ class AmazonFinancialEventList extends AmazonFinanceCore {
 
         if ($this->tokenFlag && $this->tokenUseFlag && $r === true) {
             while ($this->tokenFlag) {
-                $this->log("Recursively fetching more Financial Events");
                 $this->fetchEventList(false);
             }
         }

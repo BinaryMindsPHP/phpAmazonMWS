@@ -33,19 +33,20 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator{
 
     /**
      * Amazon Order Lists pull a set of Orders and turn them into an array of <i>AmazonOrder</i> objects.
-     * 
+     *
      * The parameters are passed to the parent constructor, which are
      * in turn passed to the AmazonCore constructor. See it for more information
      * on these parameters and common methods.
+     * @param AmazonConfigurationInterface|null $configuration
      * @param string $s [optional] <p>Name for the store you want to use.
      * This parameter is optional if only one store is defined in the config file.</p>
      * @param boolean $mock [optional] <p>This is a flag for enabling Mock Mode.
      * This defaults to <b>FALSE</b>.</p>
      * @param array|string $m [optional] <p>The files (or file) to use in Mock Mode.</p>
-     * @param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
+     * @internal param string $config [optional] <p>An alternate config file to set. Used for testing.</p>
      */
-    public function __construct($s = null, $mock = false, $m = null, $config = null){
-        parent::__construct($s, $mock, $m, $config);
+    public function __construct(AmazonConfigurationInterface $configuration = null, $s = null, $mock = false, $m = null){
+        parent::__construct($configuration, $s, $mock, $m);
         include($this->env);
         $this->resetMarketplaceFilter();
         
@@ -218,14 +219,8 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator{
             }
         }
 
-        //reset to store's default marketplace
-        if (file_exists($this->config)){
-            include($this->config);
-        } else {
-            throw new Exception('Config file does not exist!');
-        }
-        if(isset($store[$this->storeName]) && array_key_exists('marketplaceId', $store[$this->storeName])){
-            $this->options['MarketplaceId.Id.1'] = $store[$this->storeName]['marketplaceId'];
+        if(strlen($this->configuration->getMarketplaceId()) > 0) {
+            $this->options['MarketplaceId.Id.1'] = $this->configuration->getMarketplaceId();
         } else {
             $this->log("Marketplace ID is missing",'Urgent');
         }
@@ -494,8 +489,7 @@ class AmazonOrderList extends AmazonOrderCore implements Iterator{
             if ($key != 'Order'){
                 break;
             }
-            $this->orderList[$this->index] = new AmazonOrder($this->storeName,null,$data,$this->mockMode,$this->mockFiles,$this->config);
-            $this->orderList[$this->index]->setLogPath($this->logpath);
+            $this->orderList[$this->index] = new AmazonOrder($this->configuration, $this->storeName,null,$data,$this->mockMode,$this->mockFiles);
             $this->orderList[$this->index]->mockIndex = $this->mockIndex;
             $this->index++;
         }

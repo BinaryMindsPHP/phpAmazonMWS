@@ -1,5 +1,5 @@
-/nbproject/private/
-amazon-config.php
+/nbproject
+/.idea
 test.php
 log.txt
 /test-cases/log.txt
