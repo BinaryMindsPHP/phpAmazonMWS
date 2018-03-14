@@ -25,6 +25,9 @@
  * This object can use tokens when retrieving the list.
  */
 class AmazonReportList extends AmazonReportsCore implements Iterator{
+
+    use BmHelperTrait;
+
     protected $tokenFlag = false;
     protected $tokenUseFlag = false;
     protected $index = 0;

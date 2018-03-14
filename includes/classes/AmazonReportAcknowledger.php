@@ -24,6 +24,9 @@
  * required. A list of the affected reports is returned.
  */
 class AmazonReportAcknowledger extends AmazonReportsCore implements Iterator{
+
+    use BmHelperTrait;
+
     protected $count;
     protected $index = 0;
     protected $i = 0;

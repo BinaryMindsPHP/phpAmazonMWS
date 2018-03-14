@@ -24,6 +24,9 @@
  * available to limit the scope of the report.
  */
 class AmazonReportRequest extends AmazonReportsCore{
+
+    use BmHelperTrait;
+
     protected $response;
     
     /**

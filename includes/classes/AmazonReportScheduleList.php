@@ -26,6 +26,9 @@
  * retrieving the list.
  */
 class AmazonReportScheduleList extends AmazonReportsCore implements Iterator{
+
+    use BmHelperTrait;
+
     protected $tokenFlag = false;
     protected $tokenUseFlag = false;
     protected $index = 0;

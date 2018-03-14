@@ -26,6 +26,9 @@
  * which will usually be 1.
  */
 class AmazonReportScheduleManager extends AmazonReportsCore implements Iterator{
+
+    use BmHelperTrait;
+
     protected $scheduleList;
     protected $count;
     protected $i = 0;

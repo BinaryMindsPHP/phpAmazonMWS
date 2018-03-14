@@ -24,6 +24,9 @@
  * then be saved to a file.
  */
 class AmazonReport extends AmazonReportsCore{
+
+    use BmHelperTrait;
+
     protected $rawreport;
     
     /**
