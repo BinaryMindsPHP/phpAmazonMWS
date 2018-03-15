@@ -140,7 +140,11 @@ abstract class AmazonCore
         $this->storeName = $this->configuration->getStoreName();
         $this->options['SellerId'] = $this->configuration->getMerchantId();
         $this->options['AWSAccessKeyId'] = $this->configuration->getAccessKeyId();
-        $this->options['MWSAuthToken'] = $this->configuration->getAuthToken();
+
+        $token = $this->configuration->getAuthToken();
+        if (strlen($token) > 0) {
+            $this->options['MWSAuthToken'] = $token;
+        }
 
         $this->setMock($mock, $m);
 
